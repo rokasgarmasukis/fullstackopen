@@ -11,10 +11,15 @@ const create = (newPerson) => {
   return request.then((res) => res.data);
 };
 
+const update = (id, newPerson) => {
+  const request = axios.put(`${baseUrl}/${id}`, newPerson);
+  return request.then((res) => res.data);
+};
+
 const deletePerson = (id) => {
   const request = axios.delete(`${baseUrl}/${id}`);
   return request;
 };
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default { getAll, create, deletePerson };
+export default { getAll, create, update, deletePerson };

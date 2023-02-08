@@ -16,42 +16,50 @@ const App = () => {
 
   useEffect(() => {
     personsService.getAll().then(persons => {
-      console.log("received");
       setPersons(persons);
     });
   }, []);
 
-  const addPerson = (e) => {
+  const addOrUpdatePerson = (e) => {
     e.preventDefault();
 
-    let same;
-    persons.forEach((person) => {
-      if (person.name === newName) {
-        alert(`${person.name} is already added to phonebook`);
-        same = true;
-      }
-    });
-
-    if (same) return;
+    const currentPerson = persons.find(person => person.name === newName);
 
     const newPerson = {
       name: newName,
       number: newNumber,
-      id: persons[persons.length - 1].id + 1,
     };
 
+    if (currentPerson === undefined) {
+      createPerson(newPerson);
+    } else {
+      if (window.confirm(`${currentPerson.name} is already in the phonebook, replace the old number?`))
+      {
+        updatePerson(currentPerson.id, newPerson)
+      }
+    }
+  };
+
+  const updatePerson = (id, updatedPerson) => {
+    personsService.update(id, updatedPerson).then(person => {
+      setPersons([...persons.filter(person => person.id !== id), person]);
+      setNewName("");
+      setNewNumber("");
+    });
+  }
+
+  const createPerson = (newPerson) => {
     personsService.create(newPerson).then(person => {
       setPersons([...persons, person]);
       setNewName("");
       setNewNumber("");
     });
-  };
+  }
 
   const deletePerson = (id) => {
     if (!window.confirm("Do you really want to delete?")){
       return;
     }
-    console.log(id);
     personsService.deletePerson(id)
     .then(_ => {
       setPersons(persons.filter(person => person.id !== id))
@@ -72,7 +80,7 @@ const App = () => {
 
       <h3>Add new:</h3>
       <PersonForm
-        onSubmit={addPerson}
+        onSubmit={addOrUpdatePerson}
         numberValue={newNumber}
         onNumberChange={handleNumberChange}
         nameValue={newName}
