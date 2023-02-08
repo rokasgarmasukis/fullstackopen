@@ -31,6 +31,7 @@ const App = () => {
         same = true;
       }
     });
+
     if (same) return;
 
     const newPerson = {
@@ -45,6 +46,17 @@ const App = () => {
       setNewNumber("");
     });
   };
+
+  const deletePerson = (id) => {
+    if (!window.confirm("Do you really want to delete?")){
+      return;
+    }
+    console.log(id);
+    personsService.deletePerson(id)
+    .then(_ => {
+      setPersons(persons.filter(person => person.id !== id))
+    })
+  }
 
   const personsToShow =
     newSearch === ""
@@ -67,7 +79,7 @@ const App = () => {
         onNameChange={handleNameChange}
       />
       <h3>Numbers:</h3>
-      <Persons personsToShow={personsToShow} />
+      <Persons personsToShow={personsToShow} deletePerson={deletePerson}/>
 
       {/* <div>debug: {newName}</div> */}
     </div>
