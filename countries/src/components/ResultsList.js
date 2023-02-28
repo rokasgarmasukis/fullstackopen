@@ -1,6 +1,6 @@
 import CountryData from "./CountryData";
 
-const ResultsList = ({ countries }) => {
+const ResultsList = ({ countries, setCountry }) => {
   if (countries.length === 0) {
     return (
       <div>
@@ -34,7 +34,7 @@ const ResultsList = ({ countries }) => {
     <div>
       <ul>
         {sortedCountries.map((country) => (
-          <li key={country.cca2}>{country.name.common}</li>
+          <li key={country.cca2}>{country.name.common} <button onClick={() => setCountry(country.name.common)}>show</button></li>
         ))}
       </ul>
     </div>

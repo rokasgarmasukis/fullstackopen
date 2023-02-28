@@ -24,10 +24,14 @@ function App() {
     setSearch(e.target.value);
   };
 
+  const setCountry = (countryName) => {
+    setSearch(countryName);
+  };
+
   return (
     <div className="App">
       <Search value={search} handleSearch={handleSearch} />
-      <ResultsList countries={countries} />
+      <ResultsList countries={countries} setCountry={setCountry} />
     </div>
   );
 }
