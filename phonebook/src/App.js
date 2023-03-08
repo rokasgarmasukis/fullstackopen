@@ -94,7 +94,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={notification} />
+      {notification && <Notification message={notification} />}
       <Filter onChange={handleSearchChange} value={newSearch} />
 
       <h3>Add new:</h3>
