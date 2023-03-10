@@ -37,6 +37,21 @@ const initialState = [
   { id: 8, votes: 0, content: 'The only way to go fast, is to go well.' },
 ];
 
+const generateId = () => {
+  return (Math.random() * 1000000).toFixed(0)
+}
+
+export const createAnecdote = (content) => {
+  return {
+    type: 'ADD_ANECDOTE',
+    payload: {
+      id: generateId(),
+      content,
+      votes: 0
+    }
+  }
+}
+
 export const vote = (id) => {
   return {
     type: 'ADD_VOTE',
@@ -45,6 +60,8 @@ export const vote = (id) => {
     },
   };
 };
+
+
 
 const anecdotesReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -56,6 +73,8 @@ const anecdotesReducer = (state = initialState, action) => {
         votes: anecdoteToChange.votes + 1,
       };
       return state.map((a) => (a.id !== id ? a : changedAnecdote));
+    case 'ADD_ANECDOTE':
+      return [...state, action.payload]
     default:
       return state;
   }
