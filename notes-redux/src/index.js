@@ -2,14 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 
-import {  createStore } from 'redux';
-
-const noteReducer = (state = [], action) => {
-  if (action.type === 'NEW_NOTE') {
-    return state.concat(action.payload)
-  }
-  return state
-}
+import { createStore } from 'redux';
+import noteReducer from './reducers/noteReducer';
 
 const store = createStore(noteReducer);
 
@@ -18,42 +12,78 @@ store.dispatch({
   payload: {
     content: 'the app state is in redux store',
     important: true,
-    id: 1
-  }
-})
+    id: 1,
+  },
+});
 
 store.dispatch({
   type: 'NEW_NOTE',
   payload: {
     content: 'state changes are made with actions',
     important: false,
-    id: 2
-  }
-})
+    id: 2,
+  },
+});
+
+const createNote = (content) => {
+  return {
+    type: 'NEW_NOTE',
+    payload: {
+      content,
+      important: false,
+      id: generateId(),
+    },
+  };
+};
+
+const toggleImportanceOf = (id) => {
+  return {
+    type: 'TOGGLE_IMPORTANCE',
+    payload: {
+      id,
+    },
+  };
+};
+
+const generateId = () => Number((Math.random() * 1000000).toFixed(0));
 
 const App = () => {
-  return(
+  const addNote = (event) => {
+    event.preventDefault();
+    const content = event.target.note.value;
+    event.target.note.value = '';
+    store.dispatch(createNote(content));
+  };
+
+  const toggleImportance = (id) => {
+    store.dispatch(toggleImportanceOf(id));
+  };
+
+  return (
     <div>
+      <form onSubmit={addNote}>
+        <input name="note" />
+        <button type="submit">add</button>
+      </form>
       <ul>
-        {store.getState().map(note=>
-          <li key={note.id}>
+        {store.getState().map((note) => (
+          <li key={note.id} onClick={() => toggleImportance(note.id)}>
             {note.content} <strong>{note.important ? 'important' : ''}</strong>
           </li>
-        )}
-        </ul>
+        ))}
+      </ul>
     </div>
-  )
-}
+  );
+};
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 const renderApp = () => {
-  root.render(<App />)
-}
+  root.render(<App />);
+};
 
-renderApp()
-store.subscribe(renderApp)
-
+renderApp();
+store.subscribe(renderApp);
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
